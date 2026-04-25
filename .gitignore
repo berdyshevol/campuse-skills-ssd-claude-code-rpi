@@ -1,0 +1,27 @@
+.DS_Store
+.env
+.env.local
+.env.*.local
+
+# Python
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.pyc
+backend/db.sqlite3
+backend/db.sqlite3-journal
+backend/staticfiles/
+backend/media/
+
+# Node / Next
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.turbo/
+
+# IDE
+.vscode/
+.idea/
+
+# Local Claude Code settings (not shared)
+.claude/

@@ -1,0 +1,58 @@
+# Render Blueprint: deploys Django API + Next.js frontend + PostgreSQL
+# from this repo with one click.
+#
+# After connecting this repo on render.com, all three services come up
+# together. The two web services run on the free tier; PostgreSQL is on
+# the free tier (90-day expiry — bump to "basic-256mb" / $6/mo when ready).
+#
+# Two env vars must be set manually in the Render dashboard *after* the
+# first deploy creates the services (Render assigns the public URLs):
+#   skillswap-api:
+#     FRONTEND_ORIGIN  -> https://skillswap-web.onrender.com   (or your custom name)
+#     CLOUDINARY_URL   -> cloudinary://<key>:<secret>@<cloud>  (from Cloudinary dashboard)
+#   skillswap-web:
+#     NEXT_PUBLIC_API_URL -> https://skillswap-api.onrender.com
+
+services:
+  - type: web
+    name: skillswap-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py migrate --noinput
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn skillswap.wsgi --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: skillswap-db
+          property: connectionString
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: CLOUDINARY_URL
+        sync: false
+
+  - type: web
+    name: skillswap-web
+    runtime: node
+    plan: free
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start -- -p $PORT
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
+
+databases:
+  - name: skillswap-db
+    plan: free
+    databaseName: skillswap
+    user: skillswap
