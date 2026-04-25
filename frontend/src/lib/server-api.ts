@@ -9,14 +9,18 @@
 
 import { cookies } from "next/headers";
 
-import { API_URL } from "./api";
+// Server-side fetches need an absolute URL. INTERNAL_API_URL is the same
+// value next.config.ts uses for the /api/* rewrite, so SSR calls hit
+// Django directly without a self-loop through Next.
+const INTERNAL_API_URL =
+  process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 
 export async function serverApiFetch<T = unknown>(
   path: string,
   options: RequestInit = {},
 ): Promise<{ status: number; data: T | null }> {
   const cookieHeader = (await cookies()).toString();
-  const res = await fetch(`${API_URL}${path}`, {
+  const res = await fetch(`${INTERNAL_API_URL}${path}`, {
     ...options,
     headers: {
       ...(options.headers as Record<string, string> | undefined),

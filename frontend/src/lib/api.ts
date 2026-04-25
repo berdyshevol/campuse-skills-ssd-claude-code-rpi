@@ -11,8 +11,11 @@
  *     so Django sees them as authenticated. See lib/server-api.ts.
  */
 
-export const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+// Empty string = same-origin. The Next.js rewrite in `next.config.ts`
+// forwards `/api/*` to the real Django backend so the browser never has
+// to know its hostname. Keeping it same-origin is what makes session
+// cookies work even when api and web live on different subdomains in prod.
+export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 export class ApiError extends Error {
   status: number;

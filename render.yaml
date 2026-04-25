@@ -11,7 +11,9 @@
 #     FRONTEND_ORIGIN  -> https://skillswap-web.onrender.com   (or your custom name)
 #     CLOUDINARY_URL   -> cloudinary://<key>:<secret>@<cloud>  (from Cloudinary dashboard)
 #   skillswap-web:
-#     NEXT_PUBLIC_API_URL -> https://skillswap-api.onrender.com
+#     INTERNAL_API_URL -> https://skillswap-api.onrender.com   (server-only;
+#                         the browser only ever calls /api/* on the web origin
+#                         and Next.js rewrites it to this URL — see next.config.ts)
 
 services:
   - type: web
@@ -48,7 +50,7 @@ services:
     buildCommand: npm ci && npm run build
     startCommand: npm run start -- -p $PORT
     envVars:
-      - key: NEXT_PUBLIC_API_URL
+      - key: INTERNAL_API_URL
         sync: false
 
 databases:
