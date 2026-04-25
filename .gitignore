@@ -25,3 +25,10 @@ frontend/.turbo/
 
 # Local Claude Code settings (not shared)
 .claude/
+
+# Playwright MCP runtime artifacts and one-off screenshots
+.playwright-mcp/
+*.png
+e2e/login-final.png
+e2e/node_modules/
+e2e/package*.json
