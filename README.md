@@ -60,14 +60,16 @@ cp .env.example .env                       # tweak only if you want to
 python manage.py migrate                   # create tables
 python manage.py seed_demo                 # OPTIONAL: alice/bob/charlie + 3 skills
 python manage.py createsuperuser           # OPTIONAL: for /admin/
-python manage.py runserver 127.0.0.1:8001
+python manage.py runserver 127.0.0.1:8000
 ```
 
-The API is now at <http://127.0.0.1:8001>.
+The API is now at <http://localhost:8000>.
 
-> **Why port 8001?** The default 8000 is sometimes already in use by
-> other Django projects. The frontend's `.env.local` and `backend/.env`
-> are both pre-configured for `8001` and `3001` so things "just work."
+> **Heads up:** if port 8000 is already in use (often by another Django
+> project), free it first: `lsof -ti :8000 | xargs kill -9`. The session
+> cookie depends on the API and frontend sharing the `localhost` host,
+> so don't switch ports without updating `frontend/.env.local` and
+> `backend/.env` to match.
 
 ### 2. Start the frontend (Next.js)
 
@@ -75,12 +77,12 @@ In a separate terminal:
 
 ```bash
 cd frontend
-cp .env.example .env.local                 # already points at :8001
+cp .env.example .env.local                 # already points at :8000
 npm install
-npm run dev -- -p 3001
+npm run dev                                # default port 3000
 ```
 
-Open <http://localhost:3001> in your browser.
+Open <http://localhost:3000> in your browser.
 
 ### Demo accounts
 
@@ -126,7 +128,7 @@ To see all the features in two minutes:
    those buttons). Delete pops a JS confirm dialog before destroying.
 
 That covers the full happy path. The Django admin at
-<http://127.0.0.1:8001/admin/> lets you inspect rows directly if you
+<http://127.0.0.1:8000/admin/> lets you inspect rows directly if you
 ever want to check what got persisted.
 
 ## Project structure
@@ -152,8 +154,8 @@ render.yaml               one-click Render deploy (api + web + Postgres)
 ## How auth works (the trickiest piece)
 
 Backend uses **Django's built-in session cookie** auth. Because the
-frontend lives on a different origin (`localhost:3001` vs
-`localhost:8001` in dev, two `*.onrender.com` subdomains in prod), every
+frontend lives on a different origin (`localhost:3000` vs
+`localhost:8000` in dev, two `*.onrender.com` subdomains in prod), every
 request from Next.js does three things:
 
 1. Sends `credentials: "include"` so the browser attaches the
@@ -216,7 +218,7 @@ The seeder makes them repeatable:
 cd backend
 source venv/bin/activate
 python manage.py seed_demo                  # reset to known state
-python manage.py runserver 127.0.0.1:8001   # plus npm run dev in /frontend
+python manage.py runserver 0.0.0.0:8000   # plus npm run dev in /frontend
 # walk through e2e/scenarios.md in your browser, marking [X] / [F]
 ```
 

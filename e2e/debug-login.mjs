@@ -11,7 +11,7 @@
 
 import { chromium } from "playwright";
 
-const FRONT = "http://localhost:3001";
+const FRONT = "http://localhost:3000";
 const USER = "alice";
 const PASS = "SkSwap!2025";
 

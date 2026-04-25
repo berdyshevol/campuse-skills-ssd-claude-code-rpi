@@ -16,28 +16,28 @@ failing (with a note).
 
 ## Setup (run once before each test pass)
 
-The app is decoupled: Django API on **:8001**, Next.js UI on **:3001**.
+The app is decoupled: Django API on **:8000**, Next.js UI on **:3000**.
 The base URL for testing is **the Next.js frontend** unless noted otherwise.
 
 ```bash
-# Free our two ports (leaves anything on :8000 alone)
-lsof -ti :8001 -sTCP:LISTEN 2>/dev/null | xargs -r kill -9
-lsof -ti :3001 -sTCP:LISTEN 2>/dev/null | xargs -r kill -9
+# Free our two ports (kill any holders — these ports must be ours)
+lsof -ti :8000 -sTCP:LISTEN 2>/dev/null | xargs -r kill -9
+lsof -ti :3000 -sTCP:LISTEN 2>/dev/null | xargs -r kill -9
 
 # --- Terminal 1: backend -------------------------------------------------
 cd backend
 source venv/bin/activate
 python manage.py migrate                         # idempotent
 python manage.py seed_demo                       # resets demo users + skills
-python manage.py runserver 127.0.0.1:8001
+python manage.py runserver 127.0.0.1:8000
 
 # --- Terminal 2: frontend ------------------------------------------------
 cd frontend
-npm run dev -- -p 3001
+npm run dev                                      # default port 3000
 ```
 
-Base URL: `http://localhost:3001/`
-API URL:  `http://127.0.0.1:8001/`
+Base URL: `http://localhost:3000/`
+API URL:  `http://localhost:8000/`
 
 Demo accounts (all with password `SkSwap!2025`):
 
@@ -78,8 +78,8 @@ mind when running the steps:
       "Request a session" panel shows a sign-in prompt instead of a form
       when anonymous.
 - [X] **S3.** Empty-state copy renders when no skills exist. Reproduce by
-      logging into Django admin (`/admin/` on :8001) → delete all skills
-      → reload `/skills` on :3001. Expect: "No skills match your filters."
+      logging into Django admin (`/admin/` on :8000) → delete all skills
+      → reload `/skills` on :3000. Expect: "No skills match your filters."
 
 ### US2 — Register, sign in, post a skill
 
