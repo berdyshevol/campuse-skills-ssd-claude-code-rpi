@@ -33,5 +33,8 @@ export async function serverApiFetch<T = unknown>(
   } catch {
     data = null;
   }
+  // Treat 4xx/5xx as "no data" so callers can use `if (!data)` to gate on
+  // auth/missing-resource without inspecting status.
+  if (!res.ok) data = null;
   return { status: res.status, data };
 }
