@@ -5,6 +5,9 @@ A small student marketplace where classmates can post skills they offer
 reviews, and request a session. Built as a learning project to practice
 Django REST + Next.js together.
 
+**Live demo:** <https://skillswap-web-acja.onrender.com/>
+(free tier — first hit after ~15 min idle takes ~30s to wake)
+
 > **Status:** local-dev complete, all 15 e2e scenarios in
 > [`e2e/scenarios.md`](e2e/scenarios.md) passing. Deploy config for Render
 > ships in [`render.yaml`](render.yaml).
